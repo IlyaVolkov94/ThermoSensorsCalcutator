@@ -8,7 +8,8 @@ bool quitFlag = true;
 while (quitFlag)
 {
     Console.Write("Ввод:\t");
-    var userString = Console.ReadLine()!.ToLower().Trim();
-    if (userString=="q")
-        quitFlag = false;
+    UserInput userString = new (Console.ReadLine()!);
+    string[] result = userString.Split();
+    foreach(string s in result)
+    Console.WriteLine(s);
 }
