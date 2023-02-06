@@ -10,12 +10,12 @@ internal class Instruction
     {
         instruction.AppendLine("Привет, пользователь!");
         instruction.AppendLine("Для расчета введите тип датчика, команду и значение:");
-        instruction.AppendLine("\tpt100 resistance 120,1");
-        instruction.AppendLine("\tk voltage 120,1 25");
+        instruction.AppendLine("\tpt100 ress 120,1");
+        instruction.AppendLine("\tk volt 120,1 25");
         instruction.AppendLine("Список команд:");
-        instruction.AppendLine("\tresistance - для расчета сопротивления");
-        instruction.AppendLine("\ttemperature - для расчета температуры");
-        instruction.AppendLine("\tvoltage - для расчета выходного напряжения термопары");
+        instruction.AppendLine("\tress - для расчета сопротивления");
+        instruction.AppendLine("\ttemp - для расчета температуры");
+        instruction.AppendLine("\tvolt - для расчета выходного напряжения термопары");
         instruction.AppendLine("\tq - выход");
         return instruction.ToString();
     }
