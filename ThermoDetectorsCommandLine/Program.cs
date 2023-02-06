@@ -20,7 +20,7 @@ ThermocoupleTypeL typeL = new();
 ThermocoupleTypeN typeN = new();
 ThermocoupleTypeJ typeJ = new();
 ThermocoupleTypeS typeS = new();
-const string pattern = @"[^a-z-0-9\,]+";
+const string pattern = @"[^a-z-0-9\,\-]+";
 
 while (true)
 {
@@ -31,9 +31,11 @@ while (true)
     {
         break;
     }
-    if (userSubString[0] == pt100.GetName())
+
+    // Создать класс, который будет универсально работать со всеми сопротивлениями и, по возможности, термопарами. Потому что, код ниже будет с ними работать по подобию.
+    if (userSubString[0] == pt100.GetName())        
     {
-        if (userSubString[1] == "ress")
+        if (userSubString[1] == "resist")
         {
             var result = pt100.GetResistance(double.Parse(userSubString[2]));
             Console.WriteLine($"\t{Math.Round(result, 2)} Omh");
@@ -42,6 +44,10 @@ while (true)
         {
             var result = pt100.GetTemperature(double.Parse((userSubString[2])));
             Console.WriteLine($"\t{Math.Round(result,2)} °C");
+        }
+        else
+        {
+            Console.WriteLine("Некорректная команда");
         }
     }
 }

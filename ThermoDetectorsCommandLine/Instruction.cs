@@ -13,7 +13,7 @@ internal class Instruction
         instruction.AppendLine("\tpt100 ress 120,1");
         instruction.AppendLine("\tk volt 120,1 25");
         instruction.AppendLine("Список команд:");
-        instruction.AppendLine("\tress - для расчета сопротивления");
+        instruction.AppendLine("\tresist - для расчета сопротивления");
         instruction.AppendLine("\ttemp - для расчета температуры");
         instruction.AppendLine("\tvolt - для расчета выходного напряжения термопары");
         instruction.AppendLine("\tq - выход");
