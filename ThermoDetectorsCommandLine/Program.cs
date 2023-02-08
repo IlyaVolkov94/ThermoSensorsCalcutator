@@ -19,7 +19,7 @@ ThermocoupleTypeL typeL = new();
 ThermocoupleTypeN typeN = new();
 ThermocoupleTypeJ typeJ = new();
 ThermocoupleTypeS typeS = new();
-List<ResistanceTemperatureDetector> resistanceTemperatureDetectors = new()
+ResistanceTemperatureDetector[] resistanceTemperatureDetectors = new ResistanceTemperatureDetector[]
 {
     pt50,
     pt100,
@@ -30,7 +30,7 @@ List<ResistanceTemperatureDetector> resistanceTemperatureDetectors = new()
     cu50,
     cu100
 };
-List<Thermocouple> thermocouples = new()
+Thermocouple[] thermocouples = new Thermocouple[]
 {
     typeK, 
     typeL,
@@ -44,40 +44,73 @@ while (true)
 {
     Console.Write("\nВвод:\t");
     var userString = (Console.ReadLine()!.ToLower());
-    string[] userSubString = Regex.Split(userString, pattern);
+    string[] userSubStrings = Regex.Split(userString, pattern);
     
-    if (userSubString[0] == "q")
+    if (userSubStrings[0] == "q")
     {
         break;
     }
-    FindDetector(resistanceTemperatureDetectors, thermocouples, userSubString);
+    CalculateDetector(resistanceTemperatureDetectors, thermocouples, userSubStrings);
 
 }
 
-
-static void FindDetector(List<ResistanceTemperatureDetector> arg1, List<Thermocouple> arg2, string[] userSubString)
+static void CalculateDetector(ResistanceTemperatureDetector[] temperatureDetectors, Thermocouple[] thermocouples, string[] userSubStrings)
 {
-    foreach (var s in arg1)
+    foreach (var s in temperatureDetectors)
     {
-        if (userSubString[0] == s.GetName().ToLower())
+        if (userSubStrings[0] == s.GetName().ToLower())
         {
-            CalculateResistanceDetector (s, userSubString);
+            CalculateResistanceDetector (s, userSubStrings);
+            return;
+        }
+    }
+    foreach (var s in thermocouples)
+    {
+        if (userSubStrings[0]== GetThermocoupleName(s).ToLower()) 
+        {
+            CalculateThermocoupleDetector (s, userSubStrings);
             return;
         }
     }
     Console.WriteLine("Некорректный тип датчика");
 }
 
-static void CalculateResistanceDetector(ResistanceTemperatureDetector detector, string[] userSubString)
+static string GetThermocoupleName(Thermocouple thermocouple)
 {
-        if (userSubString[1] == "resist")
+    var str = thermocouple.GetName().ToLower();
+    string[] subStrings = str.Split(" ");
+    return subStrings[1];
+
+}
+
+static void CalculateThermocoupleDetector(Thermocouple thermocouple, string[] userSubStrings)
+{
+    if (userSubStrings[1]=="getvol")
+    {
+        var result = thermocouple.GetVoltage((double.Parse(userSubStrings[2]), double.Parse(userSubStrings[3])));
+        Console.WriteLine($"{Math.Round(result, 3)} mV");
+    }
+    else if (userSubStrings[1]=="gettem")
+    {
+        var result = thermocouple.GetTemperature((double.Parse(userSubStrings[2]), double.Parse(userSubStrings[3])));
+        Console.WriteLine($"{Math.Round(result, 2)} °C");
+    }
+    else
+    {
+        Console.WriteLine("Некорректная команда");
+    }
+}
+
+static void CalculateResistanceDetector(ResistanceTemperatureDetector detector, string[] userSubStrings)
+{
+        if (userSubStrings[1] == "getres")
         {
-            var result = detector.GetResistance(double.Parse(userSubString[2]));
+            var result = detector.GetResistance(double.Parse(userSubStrings[2]));
             Console.WriteLine($"\t{Math.Round(result, 2)} Omh");
         }
-        else if (userSubString[1] == "temp")
+        else if (userSubStrings[1] == "gettem")
         {
-            var result = detector.GetTemperature(double.Parse((userSubString[2])));
+            var result = detector.GetTemperature(double.Parse((userSubStrings[2])));
             Console.WriteLine($"\t{Math.Round(result, 2)} °C");
         }
         else
