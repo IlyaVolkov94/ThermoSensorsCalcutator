@@ -10,7 +10,7 @@ internal class Instruction
     {
         instruction.AppendLine("Привет, пользователь!");
         instruction.AppendLine("Для расчета введите тип датчика, команду и значение:");
-        instruction.AppendLine("\tpt100 getres 120,1");
+        instruction.AppendLine("\tcu50 getres 120,1");
         instruction.AppendLine("\t100p getres 120,1");
         instruction.AppendLine("\tk getvol 120,1 25");
         instruction.AppendLine("Для термопар необходимо ввести температуру холодного спая");

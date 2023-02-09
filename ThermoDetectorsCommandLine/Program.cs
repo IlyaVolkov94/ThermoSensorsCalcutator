@@ -32,9 +32,9 @@ ResistanceTemperatureDetector[] resistanceTemperatureDetectors = new ResistanceT
 };
 Thermocouple[] thermocouples = new Thermocouple[]
 {
-    typeK, 
+    typeK,
     typeL,
-    typeN, 
+    typeN,
     typeJ,
     typeS
 };
@@ -43,15 +43,29 @@ const string pattern = @"[^a-z-0-9\,\-]+";
 while (true)
 {
     Console.Write("\nВвод:\t");
-    var userString = (Console.ReadLine()!.ToLower());
-    string[] userSubStrings = Regex.Split(userString, pattern);
-    
-    if (userSubStrings[0] == "q")
+    try
     {
-        break;
-    }
-    CalculateDetector(resistanceTemperatureDetectors, thermocouples, userSubStrings);
+        var userString = (Console.ReadLine()!.ToLower());
+        string[] userSubStrings = Regex.Split(userString, pattern);
 
+        if (userSubStrings[0] == "q")
+        {
+            break;
+        }
+        CalculateDetector(resistanceTemperatureDetectors, thermocouples, userSubStrings);
+    }
+    catch (ArgumentOutOfRangeException)
+    {
+        Console.WriteLine("Введено некорректное значение. Возможно, значение не соотвествует типу датчика?");
+    }
+    catch (IndexOutOfRangeException)
+    {
+        Console.WriteLine("Введены некорректные данные. Возможно забыли указать температуру холодного спая?");
+    }
+    catch
+    {
+        Console.WriteLine("Непредвиденная ошибка");
+    }
 }
 
 static void CalculateDetector(ResistanceTemperatureDetector[] temperatureDetectors, Thermocouple[] thermocouples, string[] userSubStrings)
@@ -60,15 +74,15 @@ static void CalculateDetector(ResistanceTemperatureDetector[] temperatureDetecto
     {
         if (userSubStrings[0] == s.GetName().ToLower())
         {
-            CalculateResistanceDetector (s, userSubStrings);
+            CalculateResistanceDetector(s, userSubStrings);
             return;
         }
     }
     foreach (var s in thermocouples)
     {
-        if (userSubStrings[0]== GetThermocoupleName(s).ToLower()) 
+        if (userSubStrings[0] == GetThermocoupleName(s).ToLower())
         {
-            CalculateThermocoupleDetector (s, userSubStrings);
+            CalculateThermocoupleDetector(s, userSubStrings);
             return;
         }
     }
@@ -85,12 +99,12 @@ static string GetThermocoupleName(Thermocouple thermocouple)
 
 static void CalculateThermocoupleDetector(Thermocouple thermocouple, string[] userSubStrings)
 {
-    if (userSubStrings[1]=="getvol")
+    if (userSubStrings[1] == "getvol")
     {
         var result = thermocouple.GetVoltage((double.Parse(userSubStrings[2]), double.Parse(userSubStrings[3])));
         Console.WriteLine($"{Math.Round(result, 3)} mV");
     }
-    else if (userSubStrings[1]=="gettem")
+    else if (userSubStrings[1] == "gettem")
     {
         var result = thermocouple.GetTemperature((double.Parse(userSubStrings[2]), double.Parse(userSubStrings[3])));
         Console.WriteLine($"{Math.Round(result, 2)} °C");
@@ -103,18 +117,18 @@ static void CalculateThermocoupleDetector(Thermocouple thermocouple, string[] us
 
 static void CalculateResistanceDetector(ResistanceTemperatureDetector detector, string[] userSubStrings)
 {
-        if (userSubStrings[1] == "getres")
-        {
-            var result = detector.GetResistance(double.Parse(userSubStrings[2]));
-            Console.WriteLine($"\t{Math.Round(result, 2)} Omh");
-        }
-        else if (userSubStrings[1] == "gettem")
-        {
-            var result = detector.GetTemperature(double.Parse((userSubStrings[2])));
-            Console.WriteLine($"\t{Math.Round(result, 2)} °C");
-        }
-        else
-        {
-            Console.WriteLine("Некорректная команда");
-        }
+    if (userSubStrings[1] == "getres")
+    {
+        var result = detector.GetResistance(double.Parse(userSubStrings[2]));
+        Console.WriteLine($"\t{Math.Round(result, 2)} Omh");
+    }
+    else if (userSubStrings[1] == "gettem")
+    {
+        var result = detector.GetTemperature(double.Parse((userSubStrings[2])));
+        Console.WriteLine($"\t{Math.Round(result, 2)} °C");
+    }
+    else
+    {
+        Console.WriteLine("Некорректная команда");
+    }
 }
