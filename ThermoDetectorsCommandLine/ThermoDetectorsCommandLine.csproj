@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Reference Include="Automation">
-      <HintPath>..\..\ElectricClassLibrary\ElectricClassLibrary\bin\Release\netstandard2.0\Automation.dll</HintPath>
+      <HintPath>..\AutomationAssembly\Automation.dll</HintPath>
     </Reference>
   </ItemGroup>
 
