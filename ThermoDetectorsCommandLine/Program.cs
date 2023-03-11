@@ -1,134 +1,46 @@
 ﻿// Console application for calculating temperature sensors
-using Automation;
+
 using System.Text.RegularExpressions;
-using ThermoDetectorsCommandLine;
 
-Instruction instruction = new();
-Console.WriteLine(instruction.GetInstruction());
+namespace ThermoDetectorsCommandLine;
 
-ResistanceTemperatureDetectorPlatinumPt pt50 = new(50);
-ResistanceTemperatureDetectorPlatinumPt pt100 = new(100);
-ResistanceTemperatureDetectorPlatinumPt pt1000 = new(1000);
-ResistanceTemperatureDetectorPlatinumP p50 = new(50);
-ResistanceTemperatureDetectorPlatinumP p100 = new(100);
-ResistanceTemperatureDetectorPlatinumP p1000 = new(1000);
-ResistanceTemperatureDetectorCopper cu50 = new(50);
-ResistanceTemperatureDetectorCopper cu100 = new(100);
-ThermocoupleTypeK typeK = new();
-ThermocoupleTypeL typeL = new();
-ThermocoupleTypeN typeN = new();
-ThermocoupleTypeJ typeJ = new();
-ThermocoupleTypeS typeS = new();
-ResistanceTemperatureDetector[] resistanceTemperatureDetectors = new ResistanceTemperatureDetector[]
+static class Program
 {
-    pt50,
-    pt100,
-    pt1000,
-    p50,
-    p100,
-    p1000,
-    cu50,
-    cu100
-};
-Thermocouple[] thermocouples = new Thermocouple[]
-{
-    typeK,
-    typeL,
-    typeN,
-    typeJ,
-    typeS
-};
-const string pattern = @"[^a-z-0-9\,\-]+";
-
-while (true)
-{
-    Console.Write("\nВвод:\t");
-    try
+    static string introduction = "Привет, пользователь!\nДля расчета введите тип датчика, команду и значение:"
+        +"\n\tpt100 getres 120,1\n\t100p getres 120,1\n\tk getvol 120,1 25"
+        +"\nДля термопар необходимо ввести температуру холодного спая Список команд:"
+        +"\n\tgetres - для расчета сопротивления\n\tgettem - для расчета температуры\n\tgetvol - для расчета выходного напряжения термопары\n\tq - выход";
+    static void Main()
     {
-        var userString = (Console.ReadLine()!.ToLower());
-        string[] userSubStrings = Regex.Split(userString, pattern);
+        Console.WriteLine(introduction);
+        const string pattern = @"[^a-z-0-9\,\-]+";
 
-        if (userSubStrings[0] == "q")
+        while (true)
         {
-            break;
+            Console.Write("\nВвод:\t");
+            try
+            {
+                var userString = (Console.ReadLine()!.ToLower());
+                string[] userSubStrings = Regex.Split(userString, pattern);
+
+                if (userSubStrings[0] == "q")
+                {
+                    break;
+                }
+                ThermoDetector.CalculateDetector(ThermoDetector.resistanceTemperatureDetectors, ThermoDetector.thermocouples, userSubStrings);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Введено некорректное значение. Возможно, значение не соотвествует типу датчика?");
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.WriteLine("Введены некорректные данные. Возможно забыли указать температуру холодного спая?");
+            }
+            catch
+            {
+                Console.WriteLine("Непредвиденная ошибка");
+            }
         }
-        CalculateDetector(resistanceTemperatureDetectors, thermocouples, userSubStrings);
-    }
-    catch (ArgumentOutOfRangeException)
-    {
-        Console.WriteLine("Введено некорректное значение. Возможно, значение не соотвествует типу датчика?");
-    }
-    catch (IndexOutOfRangeException)
-    {
-        Console.WriteLine("Введены некорректные данные. Возможно забыли указать температуру холодного спая?");
-    }
-    catch
-    {
-        Console.WriteLine("Непредвиденная ошибка");
-    }
-}
-
-static void CalculateDetector(ResistanceTemperatureDetector[] temperatureDetectors, Thermocouple[] thermocouples, string[] userSubStrings)
-{
-    foreach (var s in temperatureDetectors)
-    {
-        if (userSubStrings[0] == s.GetName().ToLower())
-        {
-            CalculateResistanceDetector(s, userSubStrings);
-            return;
-        }
-    }
-    foreach (var s in thermocouples)
-    {
-        if (userSubStrings[0] == GetThermocoupleName(s).ToLower())
-        {
-            CalculateThermocoupleDetector(s, userSubStrings);
-            return;
-        }
-    }
-    Console.WriteLine("Некорректный тип датчика");
-}
-
-static string GetThermocoupleName(Thermocouple thermocouple)
-{
-    var str = thermocouple.GetName().ToLower();
-    string[] subStrings = str.Split(" ");
-    return subStrings[1];
-
-}
-
-static void CalculateThermocoupleDetector(Thermocouple thermocouple, string[] userSubStrings)
-{
-    if (userSubStrings[1] == "getvol")
-    {
-        var result = thermocouple.GetVoltage((double.Parse(userSubStrings[2]), double.Parse(userSubStrings[3])));
-        Console.WriteLine($"{Math.Round(result, 3)} mV");
-    }
-    else if (userSubStrings[1] == "gettem")
-    {
-        var result = thermocouple.GetTemperature((double.Parse(userSubStrings[2]), double.Parse(userSubStrings[3])));
-        Console.WriteLine($"{Math.Round(result, 2)} °C");
-    }
-    else
-    {
-        Console.WriteLine("Некорректная команда");
-    }
-}
-
-static void CalculateResistanceDetector(ResistanceTemperatureDetector detector, string[] userSubStrings)
-{
-    if (userSubStrings[1] == "getres")
-    {
-        var result = detector.GetResistance(double.Parse(userSubStrings[2]));
-        Console.WriteLine($"\t{Math.Round(result, 2)} Omh");
-    }
-    else if (userSubStrings[1] == "gettem")
-    {
-        var result = detector.GetTemperature(double.Parse((userSubStrings[2])));
-        Console.WriteLine($"\t{Math.Round(result, 2)} °C");
-    }
-    else
-    {
-        Console.WriteLine("Некорректная команда");
     }
 }
