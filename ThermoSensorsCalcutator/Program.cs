@@ -1,4 +1,4 @@
-﻿// Console application for calculating temperature sensors
+﻿// Console application for calculation of temperature sensors
 
 using System.Text.RegularExpressions;
 
