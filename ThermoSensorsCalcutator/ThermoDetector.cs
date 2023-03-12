@@ -17,6 +17,7 @@ namespace ThermoDetectorsCommandLine
         private static ThermocoupleTypeN typeN = new();
         private static ThermocoupleTypeJ typeJ = new();
         private static ThermocoupleTypeS typeS = new();
+
         internal static ResistanceTemperatureDetector[] resistanceTemperatureDetectors = new ResistanceTemperatureDetector[]
         {
             pt50,
@@ -28,6 +29,7 @@ namespace ThermoDetectorsCommandLine
             cu50,
             cu100
         };
+
         internal static Thermocouple[] thermocouples = new Thermocouple[]
         {
             typeK,
@@ -45,7 +47,7 @@ namespace ThermoDetectorsCommandLine
 
         }
 
-        internal static void CalculateThermocoupleDetector(Thermocouple thermocouple, string[] userSubStrings)
+        private static void CalculateThermocoupleDetector(Thermocouple thermocouple, string[] userSubStrings)
         {
             if (userSubStrings[1] == "getvol")
             {
@@ -63,7 +65,7 @@ namespace ThermoDetectorsCommandLine
             }
         }
 
-        internal static void CalculateResistanceDetector(ResistanceTemperatureDetector detector, string[] userSubStrings)
+        private static void CalculateResistanceDetector(ResistanceTemperatureDetector detector, string[] userSubStrings)
         {
             if (userSubStrings[1] == "getres")
             {
